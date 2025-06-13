@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Misión: NutriAgente - Niveles</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #fce4ec, #f3e5f5);
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.3em;
+      color: #6a1b9a;
+    }
+    .question {
+      font-size: 1.3em;
+      margin: 20px auto;
+      color: #4a148c;
+    }
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+    
+            .option-btn {
+              width: 80%;
+              max-width: 250px;
+              font-size: 1em;
+            
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 10px;
+      background-color: #8e24aa;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .option-btn:hover {
+      background-color: #6a1b9a;
+    }
+    .timer {
+      font-size: 1.1em;
+      color: #4a148c;
+      margin-bottom: 10px;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 1.3em;
+      color: #4a148c;
+    }
+    .end-screen {
+      display: none;
+    }
+    .kitty-img {
+      width: 200px;
+      margin-top: 20px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🕵️‍♀️ Misión: NutriAgente</h1>
+  <div class="timer" id="timer">⏳ Tiempo: 10</div>
+  <div id="juego">
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+  </div>
+  <div class="result" id="result"></div>
+  <div class="end-screen" id="final">
+    
+<div class="end-message">
+  Gracias por jugar.<br><br>
+  <strong>Creadoras del juego:</strong><br>
+  Aguila Morales Yessica Esmeralda<br>
+  Jimenez Garcia Carolina Yamilet<br>
+  Gil Aguilar Julieta<br>
+  Huerta Marin Hanna Marely
+</div>
+
+    
+  </div>
+
+  <script>
+    const niveles = [
+      [
+        {
+          q: "¿Qué alimento es más saludable?",
+          o: ["Refresco", "Zanahoria", "Pizza", "Malteada"],
+          a: "Zanahoria"
+        },
+        {
+          q: "¿Cuál de estos ayuda a la digestión?",
+          o: ["Frutas", "Galletas", "Helado", "Carne frita"],
+          a: "Frutas"
+        }
+      ],
+      [
+        {
+          q: "¿Qué bebida es más saludable?",
+          o: ["Refresco", "Agua", "Jugo artificial", "Soda"],
+          a: "Agua"
+        },
+        {
+          q: "¿Cuál de estos es una proteína saludable?",
+          o: ["Tocino", "Pollo", "Pastel", "Chocolate"],
+          a: "Pollo"
+        }
+      ],
+      [
+        {
+          q: "¿Qué es mejor para el desayuno?",
+          o: ["Donas", "Avena", "Pizza", "Refresco"],
+          a: "Avena"
+        },
+        {
+          q: "¿Cuál opción es más rica en fibra?",
+          o: ["Pan blanco", "Brócoli", "Tortas", "Papas fritas"],
+          a: "Brócoli"
+        }
+      ]
+    ];
+
+    let nivel = 0;
+    let pregunta = 0;
+    let score = 0;
+    let tiempo = 10;
+    let temporizador;
+
+    function mostrarPregunta() {
+      if (nivel < niveles.length && pregunta < niveles[nivel].length) {
+        const q = niveles[nivel][pregunta];
+        document.getElementById("question").textContent = q.q;
+        const optionsDiv = document.getElementById("options");
+        optionsDiv.innerHTML = "";
+        q.o.forEach(opt => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.textContent = opt;
+          btn.onclick = () => {
+            if (opt === q.a) score += 10;
+            else score -= 5;
+            pregunta++;
+            mostrarPregunta();
+          };
+          optionsDiv.appendChild(btn);
+        });
+      } else {
+        siguienteNivel();
+      }
+    }
+
+    function siguienteNivel() {
+      nivel++;
+      if (nivel < niveles.length) {
+        pregunta = 0;
+        tiempo = 10;
+        actualizarTemporizador();
+        mostrarPregunta();
+      } else {
+        finalizarJuego();
+      }
+    }
+
+    function finalizarJuego() {
+      clearInterval(temporizador);
+      document.getElementById("juego").style.display = "none";
+      document.getElementById("final").style.display = "block";
+      document.getElementById("result").textContent = "Puntuación final: " + score;
+    }
+
+    function actualizarTemporizador() {
+      document.getElementById("timer").textContent = "⏳ Tiempo: " + tiempo;
+    }
+
+    function iniciarTemporizador() {
+      temporizador = setInterval(() => {
+        tiempo--;
+        actualizarTemporizador();
+        if (tiempo <= 0) {
+          siguienteNivel();
+        }
+      }, 1000);
+    }
+
+    iniciarTemporizador();
+    mostrarPregunta();
+  </script>
+</body>
+</html>

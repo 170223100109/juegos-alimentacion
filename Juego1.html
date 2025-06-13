@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Desafío del Plato Saludable - Niveles</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      background: linear-gradient(to right, #e8f5e9, #c8e6c9);
+    }
+    #juego {
+      padding: 20px;
+    }
+    h1 {
+      background-color: #66bb6a;
+      color: white;
+      margin: 0;
+      padding: 15px;
+      font-size: 2em;
+    }
+    .food-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+            .food {
+              width: 40%;
+              max-width: 150px;
+              font-size: 1em;
+            
+      width: 120px;
+      margin: 10px;
+      padding: 15px;
+      border-radius: 12px;
+      background-color: #fff;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+    .food:hover {
+      transform: scale(1.05);
+      background-color: #e0f2f1;
+    }
+    .score, .timer, .level {
+      margin-top: 10px;
+      font-size: 1.1em;
+    }
+    .end-message {
+      font-size: 1.4em;
+      color: #00695c;
+      margin-top: 30px;
+    }
+    .end-screen {
+      display: none;
+      padding: 20px;
+    }
+    .kitty-img {
+      width: 200px;
+      margin-top: 20px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🍎 Desafío del Plato Saludable</h1>
+  <div id="juego">
+    <div class="level" id="nivel"></div>
+    <div class="timer" id="timer">⏳ Tiempo: 10</div>
+    <div class="food-container" id="food-container"></div>
+    <div class="score" id="score">Puntos: 0</div>
+  </div>
+  <div class="end-screen" id="final">
+    
+<div class="end-message">
+  Gracias por jugar.<br><br>
+  <strong>Creadoras del juego:</strong><br>
+  Aguila Morales Yessica Esmeralda<br>
+  Jimenez Garcia Carolina Yamilet<br>
+  Gil Aguilar Julieta<br>
+  Huerta Marin Hanna Marely
+</div>
+
+    
+  </div>
+
+  <script>
+    const niveles = [
+      [
+        { name: "Manzana 🍎", healthy: true },
+        { name: "Refresco 🥤", healthy: false },
+        { name: "Zanahoria 🥕", healthy: true },
+        { name: "Pizza 🍕", healthy: false }
+      ],
+      [
+        { name: "Agua 💧", healthy: true },
+        { name: "Helado 🍨", healthy: false },
+        { name: "Pan Integral 🍞", healthy: true },
+        { name: "Papas Fritas 🍟", healthy: false },
+        { name: "Pollo 🍗", healthy: true }
+      ],
+      [
+        { name: "Brócoli 🥦", healthy: true },
+        { name: "Galletas 🍪", healthy: false },
+        { name: "Tomate 🍅", healthy: true },
+        { name: "Tocino 🥓", healthy: false },
+        { name: "Pescado 🐟", healthy: true },
+        { name: "Soda 🧃", healthy: false }
+      ]
+    ];
+
+    let nivelActual = 0;
+    let puntuacion = 0;
+    let tiempo = 10;
+    let timerInterval;
+
+    const contenedor = document.getElementById("food-container");
+    const scoreDisplay = document.getElementById("score");
+    const nivelDisplay = document.getElementById("nivel");
+    const finalScreen = document.getElementById("final");
+    const juego = document.getElementById("juego");
+    const timerDisplay = document.getElementById("timer");
+
+    function cargarNivel() {
+      contenedor.innerHTML = "";
+      nivelDisplay.textContent = "Nivel " + (nivelActual + 1);
+      scoreDisplay.textContent = "Puntos: " + puntuacion;
+      tiempo = 10;
+      timerDisplay.textContent = "⏳ Tiempo: " + tiempo;
+      niveles[nivelActual].forEach(alimento => {
+        const div = document.createElement("div");
+        div.className = "food";
+        div.textContent = alimento.name;
+        div.onclick = () => {
+          if (div.style.pointerEvents === "none") return;
+          puntuacion += alimento.healthy ? 10 : -5;
+          scoreDisplay.textContent = "Puntos: " + puntuacion;
+          div.style.pointerEvents = "none";
+          div.style.opacity = "0.5";
+        };
+        contenedor.appendChild(div);
+      });
+      iniciarTemporizador();
+    }
+
+    function iniciarTemporizador() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        tiempo--;
+        timerDisplay.textContent = "⏳ Tiempo: " + tiempo;
+        if (tiempo <= 0) {
+          clearInterval(timerInterval);
+          siguienteNivel();
+        }
+      }, 1000);
+    }
+
+    function siguienteNivel() {
+      nivelActual++;
+      if (nivelActual < niveles.length) {
+        cargarNivel();
+      } else {
+        terminarJuego();
+      }
+    }
+
+    function terminarJuego() {
+      juego.style.display = "none";
+      finalScreen.style.display = "block";
+    }
+
+    cargarNivel();
+  </script>
+</body>
+</html>
